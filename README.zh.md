@@ -1,4 +1,6 @@
-# pyenv
+# pye
+
+**Language:** 中文 | [English](README.md)
 
 一个 Python 开发环境配置脚本，自动设置完整的现代化编码环境。
 
@@ -15,17 +17,17 @@
 
 1. 下载脚本：
 ```bash
-curl -O https://raw.githubusercontent.com/yourusername/pyenv/main/pyenv
+curl -O https://raw.githubusercontent.com/yourusername/pye/main/pye
 ```
 
 2. 添加执行权限：
 ```bash
-chmod +x pyenv
+chmod +x pye
 ```
 
 3. 移动到系统路径（可选）：
 ```bash
-mv pyenv ~/.local/bin/
+mv pye ~/.local/bin/
 ```
 
 ## 使用方法
@@ -34,13 +36,13 @@ mv pyenv ~/.local/bin/
 
 ```bash
 # 配置当前目录
-pyenv
+pye
 
 # 配置指定项目目录
-pyenv /path/to/my-project
+pye /path/to/my-project
 
 # 显示帮助
-pyenv --help
+pye --help
 ```
 
 ### 典型工作流程
@@ -51,7 +53,7 @@ uv init my-project
 cd my-project
 
 # 2. 配置开发环境
-pyenv
+pye
 
 # 3. 开始编码！
 ```
@@ -122,7 +124,3 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 4. **灵活配置**：支持不同类型的项目和 Python 版本
 
 让您专注于编码，而不是环境配置！
-
----
-
-**Language:** 中文 | [English](README.md)

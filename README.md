@@ -1,4 +1,6 @@
-# pyenv
+# pye
+
+**Language:** English | [中文](README.zh.md)
 
 A Python development environment configuration script that automatically sets up a complete coding environment with modern tooling.
 
@@ -15,17 +17,17 @@ A Python development environment configuration script that automatically sets up
 
 1. Download the script:
 ```bash
-curl -O https://raw.githubusercontent.com/yourusername/pyenv/main/pyenv
+curl -O https://raw.githubusercontent.com/yourusername/pye/main/pye
 ```
 
 2. Make it executable:
 ```bash
-chmod +x pyenv
+chmod +x pye
 ```
 
 3. Move to system path (optional):
 ```bash
-mv pyenv ~/.local/bin/
+mv pye ~/.local/bin/
 ```
 
 ## Usage
@@ -34,13 +36,13 @@ mv pyenv ~/.local/bin/
 
 ```bash
 # Configure current directory
-pyenv
+pye
 
 # Configure specific project directory
-pyenv /path/to/my-project
+pye /path/to/my-project
 
 # Show help
-pyenv --help
+pye --help
 ```
 
 ### Typical Workflow
@@ -51,7 +53,7 @@ uv init my-project
 cd my-project
 
 # 2. Configure development environment
-pyenv
+pye
 
 # 3. Start coding!
 ```
@@ -117,7 +119,3 @@ Setting up a Python development environment manually can be time-consuming. This
 4. **Universal**: Works with any Python project setup
 
 Focus on coding, not environment configuration!
-
----
-
-**Language:** English | [中文](README.zh.md)
