@@ -1,4 +1,4 @@
-# pydev
+# pyenv
 
 A Python development environment configuration script that automatically sets up a complete coding environment with modern tooling.
 
