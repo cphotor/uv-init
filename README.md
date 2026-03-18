@@ -1,6 +1,6 @@
 # pye
 
-**Version:** 1.1.6  
+**Version:** 1.1.7  
 **Language:** English | [中文](README.zh.md)
 
 A Python development environment configuration script that automatically sets up a complete coding environment with modern tooling.
@@ -14,6 +14,7 @@ A Python development environment configuration script that automatically sets up
 - 🐍 Auto-detect Python version from project
 - 🎯 One-click development environment setup
 - 🔧 Compatible with any Python project structure
+- 📜 Automatic `.gitignore` configuration with comprehensive Python development patterns
 
 -**Recommended**: This script is designed to work seamlessly with [uv](https://github.com/astral-sh/uv), a modern Python package manager. While it supports any Python project structure, using uv provides the best experience for project initialization, dependency management, and virtual environment handling.
 +**Note**: This script requires [uv](https://github.com/astral-sh/uv) to be installed, as it uses `uv venv` to create virtual environments. uv is a modern Python package manager that provides excellent project management capabilities.
@@ -112,6 +113,16 @@ pye
 - Virtual environment search paths
 - Terminal auto-activation
 - Shell startup activation for better Copilot support
+
+### 6. `.gitignore` Configuration
+- Auto-create or update `.gitignore` with comprehensive Python development patterns:
+  - `.ruff_cache/` - Ruff cache directory
+  - `.vscode/` user-specific files only (`settings.json.user`, `workspace.xml`, `*.lock`)
+  - Python development artifacts (`__pycache__/`, `*.pyc`, `build/`, `dist/`, etc.)
+  - Virtual environments (`.venv/`, `venv/`, `ENV/`, etc.)
+  - Test and coverage caches (`.pytest_cache/`, `.coverage`, `htmlcov/`, etc.)
+- Smart merge: preserves existing custom entries, only adds missing patterns
+- Project-friendly: keeps `.vscode/settings.json` and `.vscode/extensions.json` under version control
 
 ## Python Version Detection
 

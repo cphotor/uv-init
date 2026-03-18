@@ -1,6 +1,6 @@
 # pye
 
-**版本：** 1.1.6  
+**版本：** 1.1.7  
 **语言:** 中文 | [English](README.md)
 
 一个 Python 开发环境配置脚本，自动设置完整的现代化编码环境。
@@ -13,7 +13,8 @@
 - 🔄 智能配置更新（无重复）
 - 🐍 从项目自动检测 Python 版本
 - 🎯 一键设置开发环境
-- 🔧 兼容任何 Python 项目结构
+- 🔧 兼容任何 Python项目结构
+- 📜 自动配置 `.gitignore`，包含全面的 Python 开发忽略模式
 
 **注意**: 本脚本需要安装 [uv](https://github.com/astral-sh/uv)，因为它使用 `uv venv` 来创建虚拟环境。uv 是一个现代化的 Python 包管理器，提供出色的项目管理能力。
 
@@ -112,6 +113,15 @@ pye
 - 终端自动激活
 - Shell 启动激活以获得更好的 Copilot 支持
 
+### 6. `.gitignore` 配置
+- 自动创建或更新 `.gitignore`，包含全面的 Python 开发忽略模式：
+  - `.ruff_cache/` - Ruff 缓存目录
+  - `.vscode/` 仅用户特定文件（`settings.json.user`、`workspace.xml`、`*.lock`）
+  - Python 开发产物（`__pycache__/`、`*.pyc`、`build/`、`dist/` 等）
+  - 虚拟环境（`.venv/`、`venv/`、`ENV/` 等）
+  - 测试和覆盖率缓存（`.pytest_cache/`、`.coverage`、`htmlcov/` 等）
+- 智能合并：保留现有的自定义条目，仅添加缺失的模式
+- 项目友好：保持 `.vscode/settings.json` 和 `.vscode/extensions.json` 纳入版本控制
 
 ## 系统要求
 
