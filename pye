@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # pye: Configure development environment for Python projects with Windsurf/VS Code settings
-VERSION="1.1.0"
+VERSION="1.1.1"
 
 PROJECT_DIR="."
 LINE_LENGTH=88  # Default to PEP 8

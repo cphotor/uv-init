@@ -1,5 +1,6 @@
 # pye
 
+**Version:** 1.1.1  
 **Language:** English | [中文](README.zh.md)
 
 A Python development environment configuration script that automatically sets up a complete coding environment with modern tooling.
@@ -127,7 +128,8 @@ The script automatically detects Python version from:
 ## Requirements
 
 - Python 3.8+ (3.11+ recommended)
-- A Python project with `pyproject.toml`
+- Bash shell environment (built-in on macOS/Linux)
+- Optional: [uv](https://github.com/astral-sh/uv) - Recommended Python project manager
 
 ## VS Code Plugins
 

@@ -1,6 +1,7 @@
 # pye
 
-**Language:** 中文 | [English](README.md)
+**版本：** 1.1.1  
+**语言:** 中文 | [English](README.md)
 
 一个 Python 开发环境配置脚本，自动设置完整的现代化编码环境。
 
@@ -129,6 +130,12 @@ cd my-app
 - 配置好的开发环境
 - 可以直接开始编码的环境
 
+## 系统要求
+
+- Python 3.8+（推荐 3.11+）
+- Bash shell 环境（macOS/Linux 自带）
+- 可选：[uv](https://github.com/astral-sh/uv) - 推荐的 Python 项目管理工具
+
 ## VS Code 插件
 
 **VS Code 用户**推荐安装以下插件：
@@ -138,11 +145,6 @@ cd my-app
 **Windsurf 用户**推荐安装：
 - **Ruff**: `charliermarsh.ruff`
 - **Windsurf Pyright**: (内置，但建议检查更新以获得最新功能)
-
-## 依赖要求
-
-- [uv](https://github.com/astral-sh/uv): Python 包管理工具
-- Python 3.8+（推荐 3.11+）
 
 ## 许可证
 
