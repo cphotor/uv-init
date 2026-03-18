@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # pye: Configure development environment for Python projects with Windsurf/VS Code settings
-VERSION="1.1.7"
+VERSION="1.1.8"
 
 PROJECT_DIR="."
 LINE_LENGTH=88  # Default to PEP 8
@@ -153,32 +153,21 @@ TARGET_VERSION="py${PYTHON_VERSION//./}"
 mkdir -p .vscode
 
 # Create/update settings.json
-if [[ "$LANG_ENV" == "zh" ]]; then
-    echo "🔧 正在更新 .vscode/settings.json..."
-else
-    echo "🔧 Updating .vscode/settings.json..."
-fi
 if [ -f ".vscode/settings.json" ]; then
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - .vscode/settings.json 已存在，检查更新..."
-    else
-        echo "   - .vscode/settings.json already exists, checking for updates..."
-    fi
-    
     # Check if editor.defaultFormatter exists
     if grep -q "editor.defaultFormatter" .vscode/settings.json; then
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - VS Code 格式化配置已存在，跳过..."
+            echo "   ✓ VS Code 格式化配置已存在，跳过..."
         else
-            echo "   - VS Code formatting configuration already exists, skipping..."
+            echo "   ✓ VS Code formatting configuration already exists, skipped..."
         fi
         
         # Still add auto-save settings if not present
         if ! grep -q "files.autoSave" .vscode/settings.json; then
             if [[ "$LANG_ENV" == "zh" ]]; then
-                echo "   - 正在添加自动延时保存配置..."
+                echo "   → 正在添加自动延时保存配置..."
             else
-                echo "   - Adding auto-delay save configuration..."
+                echo "   → Adding auto-delay save configuration..."
             fi
             if ! jq '. + {
                 "files.autoSave": "afterDelay",
@@ -195,16 +184,16 @@ if [ -f ".vscode/settings.json" ]; then
             fi
         else
             if [[ "$LANG_ENV" == "zh" ]]; then
-                echo "   - 自动延时保存配置已存在，跳过..."
+                echo "   ✓ 自动延时保存配置已存在，跳过..."
             else
-                echo "   - Auto-delay save configuration already exists, skipping..."
+                echo "   ✓ Auto-delay save configuration already exists, skipped..."
             fi
         fi
     else
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - 正在添加 VS Code 格式化配置..."
+            echo "   → 正在添加 VS Code 格式化配置..."
         else
-            echo "   - Adding VS Code formatting configuration..."
+            echo "   → Adding VS Code formatting configuration..."
         fi
         # Create temp file with new settings and merge
         if ! jq '. + {
@@ -231,9 +220,9 @@ if [ -f ".vscode/settings.json" ]; then
     fi
 else
     if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在创建新的 .vscode/settings.json..."
+        echo "   ✓ 创建 .vscode/settings.json..."
     else
-        echo "   - Creating new .vscode/settings.json..."
+        echo "   ✓ Creating .vscode/settings.json..."
     fi
     cat > .vscode/settings.json << 'VSCODEEOF'
 {
@@ -252,38 +241,43 @@ VSCODEEOF
 fi
 
 # Create/update extensions.json for recommended extensions
-if [[ "$LANG_ENV" == "zh" ]]; then
-    echo "🔧 正在更新 .vscode/extensions.json..."
-else
-    echo "🔧 Updating .vscode/extensions.json..."
-fi
 if [ -f ".vscode/extensions.json" ]; then
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在更新现有的 .vscode/extensions.json..."
-    else
-        echo "   - Updating existing .vscode/extensions.json..."
-    fi
-    # Ensure recommended extensions include our suggestions
-    if ! jq '{
-        recommendations: [
-            "ms-python.python",
-            "charliermarsh.ruff"
-        ]
-    }' .vscode/extensions.json > .vscode/extensions.json.tmp 2>/dev/null; then
+    # Check if recommendations already exist and match
+    if jq -e '.recommendations | index("charliermarsh.ruff")' .vscode/extensions.json > /dev/null 2>&1 && \
+       jq -e '.recommendations | index("ms-python.python")' .vscode/extensions.json > /dev/null 2>&1; then
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   ⚠️ 警告：更新 extensions.json 失败，跳过..."
+            echo "   ✓ VS Code 扩展推荐配置已存在，跳过..."
         else
-            echo "   ⚠️ Warning: Failed to update extensions.json, skipping..."
+            echo "   ✓ VS Code extensions recommendation already exists, skipped..."
         fi
-        rm -f .vscode/extensions.json.tmp
     else
-        mv .vscode/extensions.json.tmp .vscode/extensions.json
+        if [[ "$LANG_ENV" == "zh" ]]; then
+            echo "   → 正在更新 .vscode/extensions.json..."
+        else
+            echo "   → Updating .vscode/extensions.json..."
+        fi
+        # Ensure recommended extensions include our suggestions
+        if ! jq '{
+            recommendations: [
+                "ms-python.python",
+                "charliermarsh.ruff"
+            ]
+        }' .vscode/extensions.json > .vscode/extensions.json.tmp 2>/dev/null; then
+            if [[ "$LANG_ENV" == "zh" ]]; then
+                echo "   ⚠️ 警告：更新 extensions.json 失败，跳过..."
+            else
+                echo "   ⚠️ Warning: Failed to update extensions.json, skipping..."
+            fi
+            rm -f .vscode/extensions.json.tmp
+        else
+            mv .vscode/extensions.json.tmp .vscode/extensions.json
+        fi
     fi
 else
     if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在创建新的 .vscode/extensions.json..."
+        echo "   ✓ 创建 .vscode/extensions.json..."
     else
-        echo "   - Creating new .vscode/extensions.json..."
+        echo "   ✓ Creating .vscode/extensions.json..."
     fi
     cat > .vscode/extensions.json << 'EXTENSIONSEOF'
 {
@@ -296,40 +290,45 @@ EXTENSIONSEOF
 fi
 
 # Create/update pyrightconfig.json
-if [[ "$LANG_ENV" == "zh" ]]; then
-    echo "🔧 正在更新 pyrightconfig.json..."
-else
-    echo "🔧 Updating pyrightconfig.json..."
-fi
 if [ -f "pyrightconfig.json" ]; then
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在更新现有的 pyrightconfig.json..."
-    else
-        echo "   - Updating existing pyrightconfig.json..."
-    fi
-    # Update pythonVersion and other key settings
-    if ! jq --arg py_version "$PY_VERSION" '{
-        pythonVersion: $py_version,
-        typeCheckingMode: "standard",
-        reportMissingImports: false,
-        reportUndefinedVariable: false,
-        reportMissingTypeStubs: true,
-        reportGeneralTypeIssues: true
-    }' pyrightconfig.json > pyrightconfig.json.tmp 2>/dev/null; then
+    # Check if pythonVersion matches current version
+    CURRENT_VERSION=$(jq -r '.pythonVersion // empty' pyrightconfig.json 2>/dev/null)
+    if [ "$CURRENT_VERSION" = "$PY_VERSION" ]; then
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   ⚠️ 警告：更新 pyrightconfig.json 失败，跳过..."
+            echo "   ✓ Pyright 配置已存在，跳过..."
         else
-            echo "   ⚠️ Warning: Failed to update pyrightconfig.json, skipping..."
+            echo "   ✓ Pyright configuration already exists, skipped..."
         fi
-        rm -f pyrightconfig.json.tmp
     else
-        mv pyrightconfig.json.tmp pyrightconfig.json
+        if [[ "$LANG_ENV" == "zh" ]]; then
+            echo "   → 正在更新 pyrightconfig.json (Python $PY_VERSION)..."
+        else
+            echo "   → Updating pyrightconfig.json (Python $PY_VERSION)..."
+        fi
+        # Update pythonVersion and other key settings
+        if ! jq --arg py_version "$PY_VERSION" '{
+            pythonVersion: $py_version,
+            typeCheckingMode: "standard",
+            reportMissingImports: false,
+            reportUndefinedVariable: false,
+            reportMissingTypeStubs: true,
+            reportGeneralTypeIssues: true
+        }' pyrightconfig.json > pyrightconfig.json.tmp 2>/dev/null; then
+            if [[ "$LANG_ENV" == "zh" ]]; then
+                echo "   ⚠️ 警告：更新 pyrightconfig.json 失败，跳过..."
+            else
+                echo "   ⚠️ Warning: Failed to update pyrightconfig.json, skipping..."
+            fi
+            rm -f pyrightconfig.json.tmp
+        else
+            mv pyrightconfig.json.tmp pyrightconfig.json
+        fi
     fi
 else
     if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在创建新的 pyrightconfig.json..."
+        echo "   ✓ 创建 pyrightconfig.json..."
     else
-        echo "   - Creating new pyrightconfig.json..."
+        echo "   ✓ Creating pyrightconfig.json..."
     fi
     cat > pyrightconfig.json << PYRIGHTEOF
 {
@@ -344,11 +343,6 @@ PYRIGHTEOF
 fi
 
 # Create/update .gitignore with recommended entries
-if [[ "$LANG_ENV" == "zh" ]]; then
-    echo "🔧 正在更新 .gitignore..."
-else
-    echo "🔧 Updating .gitignore..."
-fi
 
 # Initialize gitignore_content with essential entries
 GITIGNORE_CONTENT=""
@@ -414,13 +408,8 @@ env/
 
 # Check if .gitignore exists
 if [ -f ".gitignore" ]; then
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - .gitignore 已存在，检查并添加缺失的条目..."
-    else
-        echo "   - .gitignore already exists, checking and adding missing entries..."
-    fi
-    
-    # Add missing entries one by one
+    # Check if all required entries exist
+    MISSING_ENTRIES=()
     while IFS= read -r line; do
         # Skip empty lines and comments
         if [[ -z "$line" ]] || [[ "$line" =~ ^#.* ]]; then
@@ -429,94 +418,116 @@ if [ -f ".gitignore" ]; then
         
         # Check if this line already exists in .gitignore
         if ! grep -qxF "$line" .gitignore; then
-            echo "$line" >> .gitignore
+            MISSING_ENTRIES+=("$line")
         fi
     done <<< "$GITIGNORE_CONTENT"
     
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 已按需更新 .gitignore"
+    if [ ${#MISSING_ENTRIES[@]} -eq 0 ]; then
+        if [[ "$LANG_ENV" == "zh" ]]; then
+            echo "   ✓ .gitignore 配置已存在，跳过..."
+        else
+            echo "   ✓ .gitignore configuration already exists, skipped..."
+        fi
     else
-        echo "   - Updated .gitignore as needed"
+        if [[ "$LANG_ENV" == "zh" ]]; then
+            echo "   → 正在更新 .gitignore..."
+        else
+            echo "   → Updating .gitignore..."
+        fi
+        # Add missing entries
+        for entry in "${MISSING_ENTRIES[@]}"; do
+            echo "$entry" >> .gitignore
+        done
     fi
 else
     if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "   - 正在创建新的 .gitignore..."
+        echo "   ✓ 创建 .gitignore..."
     else
-        echo "   - Creating new .gitignore..."
+        echo "   ✓ Creating .gitignore..."
     fi
     echo "$GITIGNORE_CONTENT" > .gitignore
 fi
 
 # Update configurations in pyproject.toml
 if [ -f pyproject.toml ]; then
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "🔧 正在更新 pyproject.toml..."
-    else
-        echo "🔧 Updating pyproject.toml..."
-    fi
+    # Track if any changes were made to pyproject.toml
+    PYPROJECT_CHANGED=false
     
     # Update [tool.ruff] section
     if grep -q "^\[tool.ruff\]" pyproject.toml; then
-        if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - 正在更新现有的 [tool.ruff] 配置..."
-        else
-            echo "   - Updating existing [tool.ruff] configuration..."
-        fi
+        # Check if ruff config needs update by comparing key values
+        CURRENT_LINE_LENGTH=$(grep -A 5 '^\[tool\.ruff\]' pyproject.toml | grep 'line-length' | sed 's/.*=\s*//' | tr -d '"' | xargs)
+        CURRENT_TARGET_VERSION=$(grep -A 5 '^\[tool\.ruff\]' pyproject.toml | grep 'target-version' | sed 's/.*=\s*//' | tr -d '"' | xargs)
         
-        # Create temporary file with updated ruff config - remove all ruff sections first
-        awk '
-        BEGIN { in_ruff_section = 0 }
-        /^\[tool\.ruff/ { 
-            in_ruff_section = 1
-            next
-        }
-        /^\[tool\./ && in_ruff_section {
-            in_ruff_section = 0
-            print $0
-            next
-        }
-        END {
-            if (in_ruff_section == 0) {
-                print ""
-                print "[tool.ruff]"
-                print "line-length = '"${LINE_LENGTH}"'"
-                print "target-version = \"'"${TARGET_VERSION}"'\""
-                print ""
-                print "[tool.ruff.lint]"
-                print "select = ["
-                print "  \"E\", \"W\", \"F\", \"I\", \"N\", \"UP\", \"B\", \"A\", \"C4\", \"T20\", \"SIM\", \"ARG\", \"PTH\""
-                print "]"
-                print "fixable = [\"ALL\"]"
-                print "ignore = [\"E501\", \"T20\"]"
-                print ""
-                print "[tool.ruff.format]"
-                print "quote-style = \"double\""
-                print "indent-style = \"space\""
-            } else {
-                print ""
-                print "[tool.ruff]"
-                print "line-length = '"${LINE_LENGTH}"'"
-                print "target-version = \"'"${TARGET_VERSION}"'\""
-                print ""
-                print "[tool.ruff.lint]"
-                print "select = ["
-                print "  \"E\", \"W\", \"F\", \"I\", \"N\", \"UP\", \"B\", \"A\", \"C4\", \"T20\", \"SIM\", \"ARG\", \"PTH\""
-                print "]"
-                print "fixable = [\"ALL\"]"
-                print "ignore = [\"E501\", \"T20\"]"
-                print ""
-                print "[tool.ruff.format]"
-                print "quote-style = \"double\""
-                print "indent-style = \"space\""
+        if [ "$CURRENT_LINE_LENGTH" = "$LINE_LENGTH" ] && [ "$CURRENT_TARGET_VERSION" = "$TARGET_VERSION" ]; then
+            if [[ "$LANG_ENV" == "zh" ]]; then
+                echo "   ✓ Ruff 配置已存在，跳过..."
+            else
+                echo "   ✓ Ruff configuration already exists, skipped..."
+            fi
+        else
+            if [[ "$LANG_ENV" == "zh" ]]; then
+                echo "   → 正在更新 [tool.ruff] 配置 (line-length: $LINE_LENGTH, target-version: $TARGET_VERSION)..."
+            else
+                echo "   → Updating [tool.ruff] configuration (line-length: $LINE_LENGTH, target-version: $TARGET_VERSION)..."
+            fi
+            
+            # Create temporary file with updated ruff config - remove all ruff sections first
+            awk '
+            BEGIN { in_ruff_section = 0 }
+            /^\[tool\.ruff/ { 
+                in_ruff_section = 1
+                next
             }
-        }
-        !in_ruff_section { print }
-        ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
+            /^\[tool\./ && in_ruff_section {
+                in_ruff_section = 0
+                print $0
+                next
+            }
+            END {
+                if (in_ruff_section == 0) {
+                    print ""
+                    print "[tool.ruff]"
+                    print "line-length = '"${LINE_LENGTH}"'"
+                    print "target-version = \"'"${TARGET_VERSION}"'\""
+                    print ""
+                    print "[tool.ruff.lint]"
+                    print "select = ["
+                    print "  \"E\", \"W\", \"F\", \"I\", \"N\", \"UP\", \"B\", \"A\", \"C4\", \"T20\", \"SIM\", \"ARG\", \"PTH\""
+                    print "]"
+                    print "fixable = [\"ALL\"]"
+                    print "ignore = [\"E501\", \"T20\"]"
+                    print ""
+                    print "[tool.ruff.format]"
+                    print "quote-style = \"double\""
+                    print "indent-style = \"space\""
+                } else {
+                    print ""
+                    print "[tool.ruff]"
+                    print "line-length = '"${LINE_LENGTH}"'"
+                    print "target-version = \"'"${TARGET_VERSION}"'\""
+                    print ""
+                    print "[tool.ruff.lint]"
+                    print "select = ["
+                    print "  \"E\", \"W\", \"F\", \"I\", \"N\", \"UP\", \"B\", \"A\", \"C4\", \"T20\", \"SIM\", \"ARG\", \"PTH\""
+                    print "]"
+                    print "fixable = [\"ALL\"]"
+                    print "ignore = [\"E501\", \"T20\"]"
+                    print ""
+                    print "[tool.ruff.format]"
+                    print "quote-style = \"double\""
+                    print "indent-style = \"space\""
+                }
+            }
+            !in_ruff_section { print }
+            ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
+            PYPROJECT_CHANGED=true
+        fi
     else
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - 正在添加新的 [tool.ruff] 配置..."
+            echo "   → 添加 [tool.ruff] 配置..."
         else
-            echo "   - Adding new [tool.ruff] configuration..."
+            echo "   → Adding [tool.ruff] configuration..."
         fi
         cat >> pyproject.toml << RUFFEOF
 
@@ -535,52 +546,21 @@ ignore = ["E501", "T20"]
 quote-style = "double"
 indent-style = "space"
 RUFFEOF
+        PYPROJECT_CHANGED=true
     fi
     
     # Update [tool.vscode] section
     if grep -q "^\[tool.vscode\]" pyproject.toml; then
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - 正在更新现有的 [tool.vscode] 配置..."
+            echo "   ✓ VSCode 环境配置已存在，跳过..."
         else
-            echo "   - Updating existing [tool.vscode] configuration..."
+            echo "   ✓ VSCode environment configuration already exists, skipped..."
         fi
-        
-        # Remove vscode section and add new one at end
-        awk '
-        BEGIN { in_vscode_section = 0 }
-        /^\[tool\.vscode/ { 
-            in_vscode_section = 1
-            next
-        }
-        /^\[tool\./ && in_vscode_section {
-            in_vscode_section = 0
-            print $0
-            next
-        }
-        END {
-            if (in_vscode_section == 0) {
-                print ""
-                print "# VS Code/Windsurf Python environment configuration"
-                print "[tool.vscode]"
-                print "python.terminal.activateEnvironment = true"
-                print "python.workspaceSearchPaths = [\"./**/.venv\"]"
-                print "python.terminal.autoActivationType = \"shellStartup\""
-            } else {
-                print ""
-                print "# VS Code/Windsurf Python environment configuration"
-                print "[tool.vscode]"
-                print "python.terminal.activateEnvironment = true"
-                print "python.workspaceSearchPaths = [\"./**/.venv\"]"
-                print "python.terminal.autoActivationType = \"shellStartup\""
-            }
-        }
-        !in_vscode_section { print }
-        ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
     else
         if [[ "$LANG_ENV" == "zh" ]]; then
-            echo "   - 正在添加新的 [tool.vscode] 配置..."
+            echo "   → 添加 [tool.vscode] 配置..."
         else
-            echo "   - Adding new [tool.vscode] configuration..."
+            echo "   → Adding [tool.vscode] configuration..."
         fi
         cat >> pyproject.toml << VSCODEEOF
 
@@ -590,12 +570,7 @@ python.terminal.activateEnvironment = true
 python.workspaceSearchPaths = ["./**/.venv"]
 python.terminal.autoActivationType = "shellStartup"
 VSCODEEOF
-    fi
-else
-    if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "警告: 未找到 pyproject.toml。请在 Python 项目目录中运行此脚本。"
-    else
-        echo "Warning: pyproject.toml not found. Please run this in a Python project directory."
+        PYPROJECT_CHANGED=true
     fi
 fi
 
@@ -609,7 +584,7 @@ else
         if [[ "$LANG_ENV" == "zh" ]]; then
             echo "❌ 未找到 uv 命令。请先安装 uv: https://docs.astral.sh/uv/getting-started/installation/"
             echo "   macOS: curl -LsSf https://astral.sh/uv/install.sh | sh"
-            echo "   或使用: brew install uv"
+            echo "   或使用：brew install uv"
         else
             echo "❌ uv command not found. Please install uv first: https://docs.astral.sh/uv/getting-started/installation/"
             echo "   macOS: curl -LsSf https://astral.sh/uv/install.sh | sh"
@@ -620,16 +595,30 @@ else
     
     # Create virtual environment
     if [[ "$LANG_ENV" == "zh" ]]; then
-        echo "🔧 正在创建虚拟环境..."
+        echo "   ✓ 创建虚拟环境..."
+        # Run uv venv and translate output to Chinese
+        uv venv 2>&1 | while IFS= read -r line; do
+            if [[ "$line" =~ ^Using ]]; then
+                echo "   使用 CPython $(echo "$line" | sed 's/Using CPython //')"
+            elif [[ "$line" =~ ^Creating ]]; then
+                echo "   正在创建虚拟环境：$(echo "$line" | sed 's/Creating virtual environment at: //')"
+            elif [[ "$line" =~ ^Activate ]]; then
+                # Skip activate message as it's not needed for uv projects
+                continue
+            else
+                echo "   $line"
+            fi
+        done
     else
-        echo "🔧 Creating virtual environment..."
+        echo "   ✓ Creating virtual environment..."
+        uv venv 2>&1 | grep -v "^Activate"
     fi
-    uv venv
 fi
 
 if [[ "$LANG_ENV" == "zh" ]]; then
     echo "✅ 已为 \"$PROJECT_DISPLAY_NAME\" 项目配置/更新开发环境！"
-    echo "   - 已检查并按需更新配置"
+    echo ""
+    echo "   已检查并按需更新配置:"
     echo "   - pyproject.toml 中的 Ruff 配置"
     echo "   - Pyright 配置" 
     echo "   - VS Code/Windsurf 设置"
@@ -646,7 +635,8 @@ if [[ "$LANG_ENV" == "zh" ]]; then
     echo '   - 需要时执行 "uv add <package-name>" 添加依赖（如：uv add requests）'
 else
     echo "✅ Development environment configured/updated for \"$PROJECT_DISPLAY_NAME\" project!"
-    echo "   - Checked and updated configurations as needed"
+    echo ""
+    echo "   Checked and updated configurations:"
     echo "   - Ruff configuration in pyproject.toml"
     echo "   - Pyright configuration" 
     echo "   - VS Code/Windsurf settings"

@@ -1,6 +1,6 @@
 # pye
 
-**Version:** 1.1.7  
+**Version:** 1.1.8  
 **Language:** English | [中文](README.zh.md)
 
 A Python development environment configuration script that automatically sets up a complete coding environment with modern tooling.
